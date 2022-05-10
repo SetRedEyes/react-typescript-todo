@@ -1,6 +1,6 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ITodo } from '../interfaces'
-import { getLocalStorageTodos } from '../localStorage.service'
+import { ITodo } from '../models/ITodo'
+import { getLocalStorageTodos } from '../services/localStorage.service'
 import { checkErrorMessageType } from '../utils/checkErrorMessageType'
 import { AppDispatch, RootState } from './createStore'
 
@@ -25,7 +25,7 @@ const todosSlice = createSlice({
     },
     todosRecieved: (state, action: PayloadAction<ITodo[]>) => {
       state.entities = action.payload
-      state.isLoading = false
+      state.isLoading = true
     },
     todosRequestFailed: (state, action: PayloadAction<string>) => {
       state.error = action.payload
@@ -89,12 +89,12 @@ export const addTodo = (payload: ITodo) => async (dispatch: AppDispatch) => {
   }
 }
 
-export const removeTodo = (todoId:number) => async (dispatch: AppDispatch) => {
+export const removeTodo = (todoId: number) => async (dispatch: AppDispatch) => {
   dispatch(removeTodoRequested())
 
   try {
     const todos = await getLocalStorageTodos()
-    const updatedTodos = await todos.filter((todo:ITodo) => todo.id !== todoId)
+    const updatedTodos = await todos.filter((todo: ITodo) => todo.id !== todoId)
     localStorage.setItem('todos', JSON.stringify(updatedTodos))
     dispatch(todoRemoved(todoId))
   } catch (e) {
@@ -102,10 +102,10 @@ export const removeTodo = (todoId:number) => async (dispatch: AppDispatch) => {
   }
 }
 
-export const todoToggle = (todoId:number) => async (dispatch: AppDispatch) => {
+export const todoToggle = (todoId: number) => async (dispatch: AppDispatch) => {
   try {
     const todos = await getLocalStorageTodos()
-    const updatedTodos = await todos.map((todo:ITodo) => {
+    const updatedTodos = await todos.map((todo: ITodo) => {
       if (todo.id === todoId) {
         return {
           ...todo,
@@ -128,4 +128,6 @@ export const getTodosList = () => (state: RootState) => {
   }
 }
 
+export const getTodosLoadingStatus = () => (state: RootState) =>
+  state.todos.isLoading
 export default todosReducer

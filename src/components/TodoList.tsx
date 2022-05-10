@@ -1,4 +1,4 @@
-import { ITodo } from '../interfaces'
+import { ITodo } from '../models/ITodo'
 
 type TodoListProps = {
   todos?: ITodo[]

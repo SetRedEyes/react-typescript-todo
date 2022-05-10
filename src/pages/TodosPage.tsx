@@ -1,23 +1,24 @@
-import  { useEffect } from 'react'
+import { useEffect } from 'react'
+import LoadingSpinner from '../components/LoadingSpinner'
 import { TodoForm } from '../components/TodoForm'
 import { TodoList } from '../components/TodoList'
-import { ITodo } from '../interfaces'
+import { ITodo } from '../models/ITodo'
 import { useAppDispatch, useAppSelector } from '../store/createStore'
 import {
   addTodo,
   getTodosList,
+  getTodosLoadingStatus,
   loadTodosList,
   removeTodo,
   todoToggle
 } from '../store/todos'
-
-
 
 declare var confirm: (question: string) => boolean
 
 export const TodosPage = () => {
   const dispatch = useAppDispatch()
   const todos = useAppSelector(getTodosList())
+  const todosLoading = useAppSelector(getTodosLoadingStatus())
 
   useEffect(() => {
     dispatch(loadTodosList())
@@ -48,11 +49,15 @@ export const TodosPage = () => {
   return (
     <>
       <TodoForm onAdd={addHandler} />
-      <TodoList
-        todos={todos}
-        onToggle={toggleHandler}
-        onRemove={removeHandler}
-      />
+      {todos && !todosLoading ? (
+        <TodoList
+          todos={todos}
+          onToggle={toggleHandler}
+          onRemove={removeHandler}
+        />
+      ) : (
+        <LoadingSpinner/>
+      )}
     </>
   )
 }

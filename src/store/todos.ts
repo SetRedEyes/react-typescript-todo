@@ -1,7 +1,8 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ITodo } from '../interfaces'
 import { getLocalStorageTodos } from '../localStorage.service'
-import { RootState } from './createStore'
+import { checkErrorMessageType } from '../utils/checkErrorMessageType'
+import { AppDispatch, RootState } from './createStore'
 
 interface TodoState {
   entities: ITodo[]
@@ -33,7 +34,7 @@ const todosSlice = createSlice({
     todoAdded: (state, action: PayloadAction<ITodo>) => {
       state.entities.push(action.payload)
     },
-    todoRemoved: (state, action) => {
+    todoRemoved: (state, action: PayloadAction<number>) => {
       state.entities = state.entities.filter(
         (todo) => todo.id !== action.payload
       )
@@ -41,10 +42,7 @@ const todosSlice = createSlice({
     todoToggled: (state, action) => {
       state.entities = state.entities.map((todo) => {
         if (todo.id === action.payload) {
-          return {
-            ...todo,
-            completed: !todo.completed
-          }
+          todo.completed = !todo.completed
         }
         return todo
       })
@@ -73,11 +71,11 @@ export const loadTodosList = () => async (dispatch: AppDispatch) => {
     const todos = await getLocalStorageTodos()
     dispatch(todosRecieved(todos))
   } catch (e) {
-    todosRequestFailed(e.message)
+    todosRequestFailed(checkErrorMessageType(e))
   }
 }
 
-export const addTodo = (payload) => async (dispatch) => {
+export const addTodo = (payload: ITodo) => async (dispatch: AppDispatch) => {
   dispatch(addTodoRequested())
 
   try {
@@ -85,29 +83,29 @@ export const addTodo = (payload) => async (dispatch) => {
 
     todos.push(payload)
     localStorage.setItem('todos', JSON.stringify(todos))
-    await dispatch(todoAdded(...todos))
+    await dispatch(todoAdded(todos))
   } catch (e) {
-    todosRequestFailed(e.message)
+    todosRequestFailed(checkErrorMessageType(e))
   }
 }
 
-export const removeTodo = (todoId) => async (dispatch) => {
+export const removeTodo = (todoId:number) => async (dispatch: AppDispatch) => {
   dispatch(removeTodoRequested())
 
   try {
     const todos = await getLocalStorageTodos()
-    const updatedTodos = await todos.filter((todo) => todo.id !== todoId)
+    const updatedTodos = await todos.filter((todo:ITodo) => todo.id !== todoId)
     localStorage.setItem('todos', JSON.stringify(updatedTodos))
     dispatch(todoRemoved(todoId))
   } catch (e) {
-    todosRequestFailed(e.message)
+    todosRequestFailed(checkErrorMessageType(e))
   }
 }
 
-export const todoToggle = (todoId) => async (dispatch) => {
+export const todoToggle = (todoId:number) => async (dispatch: AppDispatch) => {
   try {
     const todos = await getLocalStorageTodos()
-    const updatedTodos = await todos.map((todo) => {
+    const updatedTodos = await todos.map((todo:ITodo) => {
       if (todo.id === todoId) {
         return {
           ...todo,
@@ -120,7 +118,7 @@ export const todoToggle = (todoId) => async (dispatch) => {
     localStorage.setItem('todos', JSON.stringify(updatedTodos))
     dispatch(todoToggled(todoId))
   } catch (e) {
-    todosRequestFailed(e.message)
+    todosRequestFailed(checkErrorMessageType(e))
   }
 }
 

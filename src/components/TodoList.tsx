@@ -1,7 +1,7 @@
 import { ITodo } from '../interfaces'
 
 type TodoListProps = {
-  todos: ITodo[]
+  todos?: ITodo[]
   onToggle(id: number): void
   onRemove: (id: number) => void
 }

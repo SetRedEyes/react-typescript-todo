@@ -11,6 +11,8 @@ import {
   todoToggle
 } from '../store/todos'
 
+
+
 declare var confirm: (question: string) => boolean
 
 export const TodosPage = () => {
@@ -19,7 +21,7 @@ export const TodosPage = () => {
 
   useEffect(() => {
     dispatch(loadTodosList())
-  }, [dispatch, todos.length])
+  }, [dispatch, todos?.length])
 
   const addHandler = (title: string) => {
     const newTodo: ITodo = {

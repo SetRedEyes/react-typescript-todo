@@ -5,7 +5,7 @@ export const Navbar = () => {
     <nav>
       <div className='nav-wrapper purple darken-2 px1'>
         <NavLink to='/' className='brand-logo'>
-          React + TypeScript
+          React + TypeScript + Redux Toolkit
         </NavLink>
         <ul id='nav-mobile' className='right hide-on-med-and-down'>
           <li>

@@ -1,17 +1,13 @@
-import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-export const Navbar: React.FC = () => {
+export const Navbar = () => {
   return (
     <nav>
       <div className='nav-wrapper purple darken-2 px1'>
         <NavLink to='/' className='brand-logo'>
           React + TypeScript
         </NavLink>
-        <ul
-          id='nav-mobile'
-          className='right hide-on-med-and-down'
-        >
+        <ul id='nav-mobile' className='right hide-on-med-and-down'>
           <li>
             <NavLink to='/'>To-do List</NavLink>
           </li>

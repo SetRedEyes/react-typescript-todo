@@ -1,4 +1,3 @@
-import React from 'react'
 import { ITodo } from '../interfaces'
 
 type TodoListProps = {
@@ -7,12 +6,8 @@ type TodoListProps = {
   onRemove: (id: number) => void
 }
 
-export const TodoList: React.FC<TodoListProps> = ({
-  todos,
-  onRemove,
-  onToggle
-}) => {
-  if (todos.length === 0) {
+export const TodoList = ({ todos, onRemove, onToggle }: TodoListProps) => {
+  if (!todos || todos.length === 0) {
     return <p className='center'>No to-dos yet!</p>
   }
 
@@ -34,7 +29,7 @@ export const TodoList: React.FC<TodoListProps> = ({
             <label>
               <input
                 type='checkbox'
-                checked={todo.completed}
+                defaultChecked={todo.completed}
                 onChange={onToggle.bind(null, todo.id)}
               />
               <span>{todo.title}</span>
